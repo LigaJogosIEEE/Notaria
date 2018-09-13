@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knock : MonoBehaviour {
+public class Door : MonoBehaviour {
 
     AudioSource[] sounds;
     AudioSource knock;
     AudioSource opening;
+	AudioSource handle;
+
+	public Sink sink;
+	bool passed = false;
 
     // Use this for initialization
     void Start()
@@ -14,6 +18,7 @@ public class Knock : MonoBehaviour {
         sounds = GetComponents<AudioSource>();
         knock = sounds[0];
         opening = sounds[1];
+		handle = sounds[2];
     }
 
     // Update is called once per frame
@@ -30,9 +35,22 @@ public class Knock : MonoBehaviour {
     {
         if (other.CompareTag("Player"))
         {
-            knock.Pause();
-            opening.Play();
+			if(!passed) {
+				passed = true;
+            	knock.Pause();
+				Invoke("OpenDoor", 0.5f);
+			} else
+			{
+				OpenDoor();
+			}
+            
             //gameObject.SetActive(false);
         }
     }
+
+	private void OpenDoor() {
+		handle.Play();
+		opening.Play();
+		sink.Begin();
+	}
 }
